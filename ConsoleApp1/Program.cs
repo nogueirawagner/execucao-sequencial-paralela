@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleApp1
@@ -14,10 +15,45 @@ namespace ConsoleApp1
   {
     static void Main(string[] args)
     {
-      
-      Console.WriteLine("Pressione ENTER para iniciar");
-      Console.ReadLine();
-      
+      Console.WriteLine("Populando List com 100.000 registros com sleep de 2 ms para cada registro");
+      Console.WriteLine("Tempo estimado de =~ 3 minutos \n\n");
+
+      Console.WriteLine("For sequencial\n");
+      var lista1 = new List<string>();
+      var swFor = new Stopwatch();
+      swFor.Start();
+      for (int i = 0; i < 100000; i++)
+      {
+        Thread.Sleep(2);
+        lista1.Add(string.Format("item-{0}", i));
+      }
+
+      swFor.Stop();
+      Console.ForegroundColor = ConsoleColor.Yellow;
+      Console.WriteLine($"\n Tempo passado para execução sequencial: {swFor.Elapsed}");
+      Console.ResetColor();
+
+      Console.WriteLine("----------------------------------------");
+
+      // ---------------------- ------------- --------------
+      Console.WriteLine("\n For Paralelo \n");
+      var lista2 = new List<string>();
+      var swForParl = new Stopwatch();
+      swForParl.Start();
+      Parallel.For(0, 100000, i =>
+      {
+        Thread.Sleep(2);
+        lista2.Add(string.Format("item-{0}", i));
+      });
+
+      swForParl.Stop();
+      Console.ForegroundColor = ConsoleColor.Yellow;
+      Console.WriteLine($"\n Tempo passado para execução paralela: {swForParl.Elapsed}");
+      Console.ResetColor();
+
+      Console.WriteLine("\n ----------------------------------------");
+
+      Console.WriteLine("\n Exibindo cidades sequenciais \n");
 
       var stopwatch = new Stopwatch();
       stopwatch.Start();
@@ -32,8 +68,8 @@ namespace ConsoleApp1
       Console.ResetColor();
 
       Console.ForegroundColor = ConsoleColor.Yellow;
-      Console.WriteLine("\n Pressione ENTER para iniciar Paralela");
-      Console.ReadLine();
+      Console.WriteLine("\n Exibindo cidades paralela com invoke");
+      Console.ResetColor();
 
       var stopwatch2 = new Stopwatch();
       stopwatch2.Start();
